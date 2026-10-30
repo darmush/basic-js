@@ -15,15 +15,26 @@ const { NotImplementedError } = require('../lib');
  */
 function transform(arr) {
   let result = []
-  arr.forEach((i) => {
-    if (arr[i] === '--double-next') {
+  if (!Array.isArray(arr)) throw new Error("'arr' parameter must be an instance of the Array!")
+
+  for (let i = 0; i < arr.length; i++) {
+    const el = arr[i]
+    const hasPrev = i > 0 && arr[i - 2] !== '--discard-next';
+    const hasNext = i < arr.length - 1;
+
+    if (el === '--double-next' && hasNext) {
+      if (i === arr.length - 1) continue
       result.push(arr[i + 1])
-    } else if (arr[i] === '--discard-prev') {
+    } else if (el === '--double-prev' && hasPrev) {
+      result.push(result[result.length - 1])
+    } else if (el === '--discard-next') {
+      i++
+    } else if (el === '--discard-prev' && hasPrev) {
       result.pop()
-    } else {
-      result.push(arr[i])
+    } else if (!['--discard-next', '--discard-prev', '--double-next', '--double-prev'].includes(el)) {
+      result.push(el)
     }
-  })
+  }
   return result
 }
 
