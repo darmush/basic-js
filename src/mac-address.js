@@ -15,7 +15,8 @@ const { NotImplementedError } = require('../lib');
  *
  */
 function isMAC48Address(n) {
-  return String(n).split('-').every(el => /^[0-9A-F]{2}$/.test(el))
+  const elements = String(n).split('-');
+  return elements.length === 6 && elements.every(el => /^[0-9A-F]{2}$/.test(el))
 }
 
 module.exports = {
